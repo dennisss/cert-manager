@@ -208,6 +208,9 @@ func (c *Controller) processNextWorkItem(ctx context.Context, key string) error 
 var keyFunc = controllerpkg.KeyFunc
 
 func init() {
+	return
+
+	/*
 	controllerpkg.Register(ControllerName, func(ctx *controllerpkg.Context) controllerpkg.Interface {
 		return New(
 			ctx.SharedInformerFactory.Certmanager().V1alpha1().Certificates(),
@@ -220,4 +223,5 @@ func init() {
 			defaults{ctx.DefaultIssuerName, ctx.DefaultIssuerKind, ctx.DefaultACMEIssuerChallengeType, ctx.DefaultACMEIssuerDNS01ProviderName},
 		).Run
 	})
+	*/
 }

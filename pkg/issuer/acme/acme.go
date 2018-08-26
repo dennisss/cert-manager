@@ -25,15 +25,12 @@ import (
 	"github.com/golang/glog"
 	corev1 "k8s.io/api/core/v1"
 	corelisters "k8s.io/client-go/listers/core/v1"
-	extlisters "k8s.io/client-go/listers/extensions/v1beta1"
-
 	"github.com/jetstack/cert-manager/pkg/acme"
 	"github.com/jetstack/cert-manager/pkg/acme/client"
 	"github.com/jetstack/cert-manager/pkg/apis/certmanager/v1alpha1"
 	"github.com/jetstack/cert-manager/pkg/controller"
 	"github.com/jetstack/cert-manager/pkg/issuer"
 	"github.com/jetstack/cert-manager/pkg/issuer/acme/dns"
-	"github.com/jetstack/cert-manager/pkg/issuer/acme/http"
 	acmeapi "github.com/jetstack/cert-manager/third_party/crypto/acme"
 )
 
@@ -45,13 +42,13 @@ type Acme struct {
 	*controller.Context
 	helper *acme.Helper
 
-	secretsLister  corelisters.SecretLister
-	podsLister     corelisters.PodLister
-	servicesLister corelisters.ServiceLister
-	ingressLister  extlisters.IngressLister
+	secretsLister corelisters.SecretLister
+	//podsLister     corelisters.PodLister
+	//servicesLister corelisters.ServiceLister
+	//ingressLister  extlisters.IngressLister
 
 	dnsSolver  solver
-	httpSolver solver
+	//httpSolver solver
 }
 
 // solver solves ACME challenges by presenting the given token and key in an
@@ -82,9 +79,9 @@ func New(ctx *controller.Context, issuer v1alpha1.GenericIssuer) (issuer.Interfa
 	}
 
 	secretsLister := ctx.KubeSharedInformerFactory.Core().V1().Secrets().Lister()
-	podsLister := ctx.KubeSharedInformerFactory.Core().V1().Pods().Lister()
-	servicesLister := ctx.KubeSharedInformerFactory.Core().V1().Services().Lister()
-	ingressLister := ctx.KubeSharedInformerFactory.Extensions().V1beta1().Ingresses().Lister()
+	//podsLister := ctx.KubeSharedInformerFactory.Core().V1().Pods().Lister()
+	//servicesLister := ctx.KubeSharedInformerFactory.Core().V1().Services().Lister()
+	//ingressLister := ctx.KubeSharedInformerFactory.Extensions().V1beta1().Ingresses().Lister()
 
 	a := &Acme{
 		Context: ctx,
@@ -92,12 +89,12 @@ func New(ctx *controller.Context, issuer v1alpha1.GenericIssuer) (issuer.Interfa
 		issuer:  issuer,
 
 		secretsLister:  secretsLister,
-		podsLister:     podsLister,
-		servicesLister: servicesLister,
-		ingressLister:  ingressLister,
+		//podsLister:     podsLister,
+		//servicesLister: servicesLister,
+		//ingressLister:  ingressLister,
 
 		dnsSolver:  dns.NewSolver(ctx),
-		httpSolver: http.NewSolver(ctx),
+		//httpSolver: http.NewSolver(ctx),
 	}
 	return a, nil
 }
@@ -130,8 +127,8 @@ func (a *Acme) createOrder(ctx context.Context, cl client.Interface, crt *v1alph
 
 func (a *Acme) solverFor(challengeType string) (solver, error) {
 	switch challengeType {
-	case "http-01":
-		return a.httpSolver, nil
+	//case "http-01":
+	//	return a.httpSolver, nil
 	case "dns-01":
 		return a.dnsSolver, nil
 	}
